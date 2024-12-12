@@ -47,8 +47,8 @@ router.post('/', (req, res) => {
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
-  // Validate the ID parameter
-  if (!id) {
+  // Validate that the ID parameter is provided
+  if (!id || id.trim() === '') {
     return res.status(400).send({ error: 'ID parameter is required.' });
   }
 
@@ -63,8 +63,8 @@ router.delete('/:id', (req, res) => {
       return res.status(404).send({ error: 'Flashcard not found.' });
     }
 
-    // Confirm successful deletion
-    res.json({ message: 'Flashcard deleted successfully.', id });
+    // Confirm successful deletion (convert ID to a number)
+    res.json({ message: 'Flashcard deleted successfully.', id: Number(id) });
   });
 });
 

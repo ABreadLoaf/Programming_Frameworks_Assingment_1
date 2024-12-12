@@ -20,6 +20,7 @@ function authenticateToken(req, res, next) {
 router.post('/signup', async (req, res) => {
   const { username, password } = req.body;
 
+  // Ensure both username and password are provided
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
@@ -77,5 +78,15 @@ router.post('/login', (req, res) => {
   });
 });
 
-// Export the router
+// Get user details (authenticated)
+router.get('/me', authenticateToken, (req, res) => {
+  const query = `SELECT id, username FROM users WHERE id = ?`;
+
+  db.get(query, [req.user.id], (err, user) => {
+    if (err) return res.status(500).json({ error: 'Database error during fetching user' });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  });
+});
+
 module.exports = router;
