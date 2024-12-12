@@ -1,12 +1,12 @@
 const express = require('express');
 const request = require('supertest');
-const setRoutes = require('../routes/sets'); // Assuming you have routes for sets
+const setRoutes = require('../routes/sets'); 
 const sqlite3 = require('sqlite3').verbose();
 
 // Setup Express app and mock database
 const app = express();
-app.use(express.json()); // Middleware to parse JSON
-app.use('/sets', setRoutes); // Use set routes
+app.use(express.json()); 
+app.use('/sets', setRoutes); 
 
 // Create an in-memory database and initialize tables
 const db = new sqlite3.Database(':memory:');
@@ -38,8 +38,8 @@ describe('Sets API', () => {
     it('should return all sets', async () => {
       const res = await request(app).get('/sets');
       
-      expect(res.status).toBe(200); // Expect a 200 OK response
-      expect(Array.isArray(res.body)).toBe(true); // Expect response body to be an array
+      expect(res.status).toBe(200); 
+      expect(Array.isArray(res.body)).toBe(true);
       if (res.body.length > 0) {
         expect(res.body[0]).toHaveProperty('id');
         expect(res.body[0]).toHaveProperty('name');
@@ -51,26 +51,26 @@ describe('Sets API', () => {
   describe('POST /sets', () => {
     it('should create a new set and return it', async () => {
       const newSet = {
-        name: 'New Set', // The name for the set
+        name: 'New Set', 
       };
 
       const res = await request(app)
         .post('/sets')
         .send(newSet);
 
-      expect(res.status).toBe(201); // Expect 201 Created for a successful creation
-      expect(res.body).toHaveProperty('id'); // Check that the response includes an ID
-      expect(res.body.name).toBe(newSet.name); // Ensure the name matches
+      expect(res.status).toBe(201); 
+      expect(res.body).toHaveProperty('id');
+      expect(res.body.name).toBe(newSet.name); 
     });
 
     it('should return an error if name is missing', async () => {
-      const incompleteSet = {}; // Missing name
+      const incompleteSet = {}; 
 
       const res = await request(app)
         .post('/sets')
         .send(incompleteSet);
 
-      expect(res.status).toBe(400); // Expect 400 Bad Request
+      expect(res.status).toBe(400); 
       expect(res.body.error).toBe('Set name is required.');
     });
   });
@@ -78,7 +78,7 @@ describe('Sets API', () => {
   // Test DELETE route
   describe('DELETE /sets/:id', () => {
     it('should delete a set by ID and return a success message', async () => {
-      // First, add a set to ensure that there's one to delete
+     
       const newSet = {
         name: 'Set to delete',
       };
@@ -89,13 +89,13 @@ describe('Sets API', () => {
 
       const setId = createRes.body.id;
 
-      // Now, try to delete that set
+      
       const deleteRes = await request(app)
         .delete(`/sets/${setId}`);
 
-      expect(deleteRes.status).toBe(200); // Expect 200 OK response
+      expect(deleteRes.status).toBe(200);
       expect(deleteRes.body.message).toBe('Set and associated flashcards deleted successfully.');
-      expect(Number(deleteRes.body.id)).toBe(setId); // Ensure the correct ID is returned (convert to number)
+      expect(Number(deleteRes.body.id)).toBe(setId); 
     });
   });
 });

@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('../models/flashcards'); // Adjust the path to your SQLite database
+const db = require('../models/flashcards'); 
 const router = express.Router();
 
-// Middleware to authenticate token
+
 function authenticateToken(req, res, next) {
   const token = req.header('Authorization')?.split(' ')[1]; // Get token from 'Authorization' header
   if (!token) return res.status(401).json({ error: 'Access Denied' });
@@ -12,7 +12,7 @@ function authenticateToken(req, res, next) {
   jwt.verify(token, process.env.JWT_SECRET || 'default_secret', (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid Token' });
     req.user = user;  // Attach user info to request
-    next();  // Proceed to next middleware/handler
+    next(); 
   });
 }
 
